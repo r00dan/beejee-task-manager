@@ -8,6 +8,7 @@ import AppContext from './AppContext'
 import Filters from './components/Filters'
 import Header from './components/Header'
 import TasksList from './components/TasksList'
+import AddNewTaskForm from './components/AddNewTaskForm'
 
 export default class App extends Component {
   constructor() {
@@ -67,6 +68,7 @@ export default class App extends Component {
               />
             </Col>
           </Row>
+          <AddNewTaskForm />
         </Container>
       </AppContext.Provider>
     )
