@@ -54,6 +54,7 @@ export default class App extends Component {
           <Header />
           <Filters />
           <TasksList />
+          <AddNewTaskForm />
           <Row>
             <Col lg={{ span: 6, offset: 3 }} md={ 12 }>
               <ReactPaginate 
@@ -68,7 +69,6 @@ export default class App extends Component {
               />
             </Col>
           </Row>
-          <AddNewTaskForm />
         </Container>
       </AppContext.Provider>
     )

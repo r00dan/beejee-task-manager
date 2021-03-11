@@ -42,37 +42,41 @@ export default function AddNewTaskForm() {
     }
 
     return (
-        <>
-            <Button onClick={handleShow}>Add new task</Button>
+        <Row>
+            <Col lg={{ span: 2, offset: 5 }}>
+                <Button style={{ marginBottom: '1rem' }} onClick={handleShow}>Add new task</Button>
 
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>New task: </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group controlId="exampleForm.ControlInput1">
-                            <Form.Label>Username</Form.Label>
-                            <Form.Control ref={ usernameInputRef } type="text" required={true} />
-                            <br />
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control ref={ emailInputRef } type="email" placeholder="example@example.com" required={true} />
-                            <br />
-                            <Form.Label>Task description</Form.Label>
-                            <Form.Control as="textarea" ref={ textInputRef } rows={3} required={true} />                            
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button style={{ marginRight: ".5rem" }} variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>New task: </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group controlId="newTaskForm.username">
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control ref={ usernameInputRef } type="text" required={true} />
+                            </Form.Group>
+                            <Form.Group controlId="newTaskForm.email">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control ref={ emailInputRef } type="email" placeholder="example@example.com" required={true} />
+                            </Form.Group>
+                            <Form.Group controlId="newTaskForm.description">
+                                <Form.Label>Task description</Form.Label>
+                                <Form.Control as="textarea" ref={ textInputRef } rows={3} required={true} />                            
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button style={{ marginRight: ".5rem" }} variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
 
-                    <Button variant="primary" onClick={checkAndSendData}>
-                        Done
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </>
+                        <Button variant="primary" onClick={checkAndSendData}>
+                            Done
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </Col>
+        </Row>
     )
 }

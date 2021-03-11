@@ -1,7 +1,14 @@
 import React from 'react'
-import { Row, Col, Button } from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
+
+
+import Auth from './Auth'
+
+
 
 export default function Header() {
+
+
     return (
         <Row>
             <Col>
@@ -9,8 +16,10 @@ export default function Header() {
             </Col>
 
             <Col className="text-right">
-                <Button>Log in</Button>
+                <Auth />
             </Col>
+
+            
         </Row>
     )
 }
