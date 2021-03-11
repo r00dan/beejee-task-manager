@@ -90,10 +90,10 @@ export default function Task(props) {
     }
 
     const statuses = { 
-        0: "Not done (0)",
-        1: "Not done, edited (1)",
-        10: "Done (10)",
-        11: "Done and edited (11)"
+        0: "Not done",
+        1: "Not done, edited",
+        10: "Done",
+        11: "Done and edited"
     }
 
     return (
@@ -105,7 +105,7 @@ export default function Task(props) {
                         <Card className="task" data-task-id={props.id}>
                         <Card.Body>
                             <Card.Title>{props.name} | {props.email}</Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">{statuses[props.status]}</Card.Subtitle>
+                            <Card.Subtitle className="mb-2 text-muted">Status: {props.status + " - " + statuses[props.status]}</Card.Subtitle>
                             <Card.Text>{props.text}</Card.Text>
                             <Row>
                                 <Col>
