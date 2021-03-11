@@ -60,7 +60,7 @@ export default function Auth() {
                     <div>
                         {context.state.isLoggedIn ? <Button variant="outline-primary" style={{ marginTop: ".25rem" }} onClick={() => {
                             handleLogout(context)
-                        }}>Log out</Button> : <Button onClick={handleShow}>Log in</Button>}
+                        }}>Log out</Button> : <Button variant="outline-primary" style={{ marginTop: ".25rem" }} onClick={handleShow}>Log in</Button>}
                         <Modal show={show} onHide={handleClose}>
                             <Modal.Body>
                                 <Form>
