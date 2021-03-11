@@ -1,20 +1,97 @@
 import React, { useState } from 'react'
 import { Row, Col, Card, Button, Modal, Form } from 'react-bootstrap'
 
+import { editTask } from '../Model'
+import { getExpiryToken } from '../ExpiryToken'
 import AppContext from '../AppContext'
 
 export default function Task(props) {
+    const descriptionInputRef = React.createRef();
+
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const handleSolve = () => {
+    const changeStatusIfRequired = status => {
+        if (status === 0) {
+            return 1;
+        }
 
+        else if (status === 10) {
+            return 11;
+        }
+
+        else {
+            return status;
+        }
+    }
+
+    const solveTaskIfRequired = status => {
+        if (status === 0) {
+            return 10;
+        }
+
+        else if (status === 1) {
+            return 11;
+        }
+
+        else {
+            return status;
+        }
+    }
+
+    const handleUpdate = context => {
+        if (!descriptionInputRef.current.value) {
+            context.setState({
+                toast: {
+                    visible: true,
+                    type: 'err',
+                    text: "Task description field should be filled."
+                }
+            })
+            return;
+        }
+        else if (!context.state.isLoggedIn) {
+            context.setState({
+                toast: {
+                    visible: true,
+                    type: 'err',
+                    text: "You must be authorized to edit tasks!"
+                }
+            })
+            return;
+        }
+
+        editTask(props.id, getExpiryToken(), changeStatusIfRequired(props.status), descriptionInputRef.current.value)
+            .then(res => {
+                context.setState({
+                    toast: {
+                        text: "Task has been successfully edited!",
+                        type: 'default',
+                        visible: true
+                    }
+                })
+            })
+        
+        handleClose();
+    }
+
+    const handleSolve = context => {
+        editTask(props.id, getExpiryToken(), solveTaskIfRequired(props.status), null)
+            .then(res => {
+                context.setState({
+                    toast: {
+                        text: "Task has been successfully solved!",
+                        type: 'default',
+                        visible: true
+                    }
+                })
+            })
     }
 
     const statuses = { 
         0: "Not done (0)",
-        1 : "Not done, edited (1)",
+        1: "Not done, edited (1)",
         10: "Done (10)",
         11: "Done and edited (11)"
     }
@@ -32,11 +109,15 @@ export default function Task(props) {
                             <Card.Text>{props.text}</Card.Text>
                             <Row>
                                 <Col>
-                                    { context.state.isLoggedIn && <Card.Link href="#" onClick={handleShow}>Edit</Card.Link> }
+                                    { context.state.isLoggedIn && <Button size="sm" variant="outline-primary" onClick={handleShow}>Edit</Button> }
                                 </Col>
 
                                 <Col className="text-right">
-                                    { context.state.isLoggedIn && <Button onClick={handleSolve}>Solve</Button> }
+                                    { context.state.isLoggedIn && 
+                                        (props.status === 0 || props.status === 1) && 
+                                        <Button size="sm" variant="outline-success" onClick={() => {
+                                        handleSolve(context);
+                                    }}>Solve</Button> }
                                 </Col>
                             </Row>
                         </Card.Body>
@@ -45,14 +126,16 @@ export default function Task(props) {
                         <Modal show={show} onHide={handleClose}>
                             <Modal.Body>
                                 <Form>
-                                    <Form.Group controlId="loginForm.username">
-                                        <Form.Label>Task description</Form.Label>
-                                        <Form.Control type="textarea" required={true} />
+                                    <Form.Group controlId="editForm.description">
+                                        <Form.Label>{props.text}</Form.Label>
+                                        <Form.Control ref={ descriptionInputRef } type="text" required={true} />
                                     </Form.Group>
                                 </Form>
                             </Modal.Body>
                             <Modal.Footer>
-                                <Button variant="primary">
+                                <Button variant="primary" onClick={() => {
+                                    handleUpdate(context);
+                                }}>
                                     Update task
                                 </Button>
                             </Modal.Footer>

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Row, Col, Container } from 'react-bootstrap'
+import { Row, Col, Container, Toast } from 'react-bootstrap'
 import ReactPaginate  from 'react-paginate'
 
 import { getTasksByUsername } from './Model'
+import { isTokenExpiredOrNotCreated } from './ExpiryToken'
 
 import AppContext from './AppContext'
 import Filters from './components/Filters'
@@ -10,16 +11,22 @@ import Header from './components/Header'
 import TasksList from './components/TasksList'
 import AddNewTaskForm from './components/AddNewTaskForm'
 
+
 export default class App extends Component {
   constructor() {
     super();
 
     this.state = {
-      isLoggedIn: false,
+      isLoggedIn: !isTokenExpiredOrNotCreated(),
       totalTasksCount: null,
       totalPagesCount: null,
       currentPage: 1,
-      currentPageTasks: []
+      currentPageTasks: [],
+      toast: {
+        visible: false,
+        text: '',
+        type: 'default'
+      }
     }
   }
 
@@ -44,12 +51,51 @@ export default class App extends Component {
     context.updateDataFromServer(newPageNumber);
   }
 
+  onToastClose () {
+    this.setState({
+      toast: {
+        visible: false,
+        text: ''
+      }
+    })
+  }
+
   render() {
     return (
       <AppContext.Provider value={{
         state: this.state,
         setState: state => (this.setState(state))
       }}>
+        <div
+          aria-live="polite"
+          aria-atomic="true"
+          style={{
+            position: 'relative'
+          }}
+        >
+          <Toast 
+            onClose={() => {
+              this.onToastClose();
+            }}
+            show={this.state.toast.visible}
+            delay={3000} 
+            autohide
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              zIndex: 9999
+            }}
+          >
+              <Toast.Header>
+                  <strong className="mr-auto">Notification <large>{this.state.toast.type === 'default' ? "✈" : "⛔"}</large></strong>
+                  <small>Now</small>
+              </Toast.Header>
+              <Toast.Body>
+                {this.state.toast.text}
+              </Toast.Body>
+          </Toast>
+        </div>
         <Container>
           <Header />
           <Filters />

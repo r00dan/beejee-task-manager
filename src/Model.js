@@ -45,12 +45,15 @@ export function login (username, password) {
     })
 }
 
-export function edit (token, status, text) {
+export function editTask (id, token, status, text) {
     let data = new FormData();
+    data.append('token', token);
+    data.append('status', status);
+    text && data.append('text', text);
 
     return axios({
         method: 'POST',
-        url: `${API_URL}edit`,
+        url: `${API_URL}edit/${id}?developer=Name`,
         data: data,
         crossDomain: true,
         mimeType: "multipart/form-data",

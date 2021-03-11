@@ -24,17 +24,17 @@ export default function Filters() {
                 return (
                     <Row>
                         <Col className="text-center">
-                            <Button id="by-name" variant="link" onClick={() => {
+                            <Button style={{ width: "100%" }} id="by-name" variant="info" onClick={() => {
                                 sortBy('username', context)
                             }}>Sort by name</Button>
                         </Col>
                         <Col className="text-center">
-                            <Button id="by-email" variant="link"onClick={() => {
+                            <Button style={{ width: "100%" }} id="by-email" variant="info" onClick={() => {
                                 sortBy('email', context)
                             }}>Sort by email</Button>
                         </Col>
                         <Col className="text-center">
-                            <Button id="by-status" variant="link"onClick={() => {
+                            <Button style={{ width: "100%" }} id="by-status" variant="info" onClick={() => {
                                 sortBy('status', context)
                             }}>Sort by status</Button>
                         </Col>

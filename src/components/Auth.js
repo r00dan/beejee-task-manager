@@ -3,6 +3,7 @@ import { Button, Modal, Form } from 'react-bootstrap'
 
 import AppContext from '../AppContext'
 import { login } from '../Model'
+import { setExpiryToken, destroyToken, isTokenExpiredOrNotCreated } from '../ExpiryToken'
 
 export default function Auth() {
     const usernameInputRef = React.createRef();
@@ -12,46 +13,31 @@ export default function Auth() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const getExpiryToken = key => {
-        const itemStr = localStorage.getItem(key);
-        if (!itemStr) {
-            return null;
-        }
-
-        const item = JSON.parse(itemStr);
-        const now = new Date();
-
-        if (now.getTime() > item.expiry) {
-            localStorage.removeItem(key);
-            return null;
-        }
-
-        return item.value;
-    }
-
-    const setExpiryToken = (key, value) => {
-        const now = new Date();
-        const ttl = 24 * 60 * 60 * 1000;
-        const item = {
-            value: value,
-            expiry: now.getTime() + ttl
-        }
-        localStorage.setItem(key, JSON.stringify(item));
-    }
-
     let handleLogin = (context, username, password) => {
         if (!username.current.value || !password.current.value) {
-            alert('All fields should be filled!');
+            context.setState({
+                toast: {
+                    visible: true,
+                    type: 'err',
+                    text: "All fields should be filled!."
+                }
+            });
             return;
         }
 
         login(username.current.value, password.current.value)
             .then(res => {
                 if (res.data.status !== "ok") {
-                    alert('Invalid login or password.')
+                    context.setState({
+                        toast: {
+                            visible: true,
+                            type: 'err',
+                            text: "Invalid login or password."
+                        }
+                    });
                 }
                 else {
-                    setExpiryToken('act', res.data.message.token);
+                    setExpiryToken(res.data.message.token);
                     context.setState({
                         isLoggedIn: true
                     })
@@ -61,8 +47,9 @@ export default function Auth() {
     }
 
     let handleLogout = (context) => {
+        destroyToken();
         context.setState({
-            isLoggedIn: false
+            isLoggedIn: isTokenExpiredOrNotCreated()
         })
     }
 
@@ -71,7 +58,7 @@ export default function Auth() {
             {context => {
                 return (
                     <div>
-                        {context.state.isLoggedIn ? <Button onClick={() => {
+                        {context.state.isLoggedIn ? <Button variant="outline-primary" style={{ marginTop: ".25rem" }} onClick={() => {
                             handleLogout(context)
                         }}>Log out</Button> : <Button onClick={handleShow}>Log in</Button>}
                         <Modal show={show} onHide={handleClose}>

@@ -10,7 +10,7 @@ export default function Header() {
 
 
     return (
-        <Row>
+        <Row style={{ marginBottom:".5rem" }}>
             <Col>
                 <h2>task-manager</h2>
             </Col>
